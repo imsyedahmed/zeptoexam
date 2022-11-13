@@ -1,0 +1,14 @@
+{
+    "name": "imsyed/api",
+    "description": "Zepto Exam App Demo",
+    "authors": [
+        {
+            "name": "Syed Ahmed",
+            "email": "imsyedahmedbd@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.5",
+        "catfan/medoo": "^2.1"
+    }
+}
