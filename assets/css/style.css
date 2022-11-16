@@ -50,3 +50,11 @@ a:hover {
     top: 0;
     left: 0;
 }
+
+#success{
+    display: none;
+}
+
+#error{
+    display: none;
+}

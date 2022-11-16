@@ -1,23 +1,112 @@
+// all ajax function 
 function uploadFormData(formData) {
-    $('#loader-icon').show();
     $.ajax({
-        url: "127.0.0.1:8000/api/upload.php",
+        url: "http://localhost/zeptoexam/api/font.php?type=upload",
         type: "POST",
         data: formData,
         contentType: false,
         cache: false,
         processData: false,
         success: function (data) {
-            $('#drop-area').append(data);
-            $('#loader-icon').hide()
-            $('#success-message-info').html("Added Successfully");
-            $('#success-message-info').css("display", "inline-block");
+            var dt = JSON.parse(data);
+            if (dt.status) {
+                $('#success').show();
+                $('#success').html(dt.msg);
+                $('#fontlist').html('');
+                $("head").remove("#customFontFamily");
+                fontList();
+            } else {
+                $('#error').show();
+                $('#error').html(dt.msg);
+            }
+
         }
     });
 }
 
+/**
+ * all font list 
+ */
+function fontList() {
+    $.get("http://localhost/zeptoexam/api/font.php?type=list", function (data) {
+        var dt = JSON.parse(data);
+        $("head").append("<style id='customFontFamily'></style>");
+        if (dt.status) {
+            dt.items.forEach(itm => {
+                let row = `
+                    <tr>
+                        <td>${itm.name}</td>
+                        <td><p style="font-family: ${itm.name}">Hello World!</p></td>
+                        <td><a href="javascript:deleteFont(${itm.id});" class="text-danger">Delete</a></td>
+                    </tr>
+                `;
+                let style = `
+                    @font-face {
+                        font-family: '${itm.name}';
+                        src: url('http://localhost/zeptoexam/api/fonts/${itm.file_name}') format('truetype');
+                    }
+                `;
+                $("#customFontFamily").append(style);
+                $('#fontlist').append(row);
+
+            })
+        }
+    });
+}
+
+
+/**
+ * all font list 
+ */
+ function fontGroupList() {
+    $.get("http://localhost/zeptoexam/api/group.php?type=list", function (data) {
+        var dt = JSON.parse(data);
+        if (dt.status) {
+            dt.items.forEach(itm => {
+                let row = `
+                    <tr>
+                        <td>${itm.name}</td>
+                        <td><p style="font-family: ${itm.name}">Hello World!</p></td>
+                        <td><a href="javascript:deleteEdit(${itm.id});" class="text-primary">Edit</a>&nbsp;<a href="javascript:deleteFont(${itm.id});" class="text-danger">Delete</a></td>
+                    </tr>
+                `;
+                $('#grouplist').append(row);
+
+            })
+        }
+    });
+}
+
+/**
+ * 
+ * @param {*} id 
+ */
+function deleteFont(id) {
+    var ct = confirm('Are you sure want to delete?');
+    if (ct) {
+
+        $.get(`http://localhost/zeptoexam/api/font.php?type=delete&id=${id}`, function (data) {
+            var dt = JSON.parse(data);
+            if (dt.status) {
+                $('#fontlist').html('');
+                $("head").remove("#customFontFamily");
+                fontList();
+            }
+        });
+    }
+}
+
+// upload input font file 
+$('#page-load').on('change', 'input[type=file]', function () {
+    var fd = new FormData();
+    var files = $('#file')[0].files[0];
+    fd.append('file', files);
+    uploadFormData(fd);
+});
+// end upload input font file 
+
 $(document).ready(function () {
-    
+    // upload font file 
     $('#drop-area').on({
         dragover: function (e) {
             e.stopPropagation();
@@ -38,12 +127,8 @@ $(document).ready(function () {
             uploadFormData(fd);
         }
     });
-
-    $("input[type=file]").change(function () {
-        var fd = new FormData();
-        var files = $('#file')[0].files[0];
-        fd.append('file', files);
-        uploadFormData(fd);
-    });
+    // end of upload font file 
 
 });
+
+

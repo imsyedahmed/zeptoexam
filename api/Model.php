@@ -14,9 +14,6 @@ class Model {
     public function __construct(){
         $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
         $dotenv->load();
-    }
-    
-    private function _dbConnect(){
         $this->_connect = new Medoo([
             'type' => 'mysql',
             'host' => $_ENV['HOSTNAME'],
@@ -24,15 +21,26 @@ class Model {
             'username' => $_ENV['DBUSER'],
             'password' => $_ENV['DBPASS']
         ]);
-        var_dump($this->_connect->error);
     }
-    
+
     private function _insertFont($data){
         return $this->_connect->insert("fonts", $data);
     }
 
+    public function getFontList(){
+        return $this->_connect->select("fonts", "*");
+    }
+
+    public function getFontInfo($id){
+        return $this->_connect->select("fonts", "*", array('id' => $id));
+    }
+
+    public function deleteFont($id){
+        return $this->_connect->delete("fonts", array('id'=> $id));
+    }
+
     private function _insertFontGroup($data){
-        return $this->_connect->insert("fontgroup", $data);
+        return $this->_connect->insert("fontgroups", $data);
     }
 
     private function _insertFontGroupRow($data){
@@ -44,11 +52,13 @@ class Model {
         $this->_filename = $_FILES["file"]["name"];
         $this->_tmp = $_FILES["file"]["tmp_name"];
         $this->_uploadfile = $this->_src . basename($this->_filename);
-        $filetype = explode(".",$this->_filename);
+        $filetype = explode(".", $this->_filename);
         $this->_type = $filetype[count($filetype)-1];
         if(strtolower($this->_type) == "ttf"){
-            if(move_uploaded_file($this->_tmp, $this->_uploadFile)){
-                $data['font_name'] = $this->_filename;
+            if(move_uploaded_file($this->_tmp, $this->_uploadfile)){
+                $lfilename = array_pop($filetype);
+                $data['name'] = implode(' ', $filetype);
+                $data['file_name'] = $this->_filename;
                 $ins = $this->_insertFont($data);
                 if($ins){
                     return array(

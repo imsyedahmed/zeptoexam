@@ -1,0 +1,71 @@
+<div id="home">
+<div class="container">
+    <header class="d-flex justify-content-center py-3">
+      <ul class="nav nav-pills">
+        <li class="nav-item"><a href="#home.html" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="#groups.html" class="nav-link">Groups</a></li>
+      </ul>
+    </header>
+  </div>
+
+  <div class="hr-divider"></div>
+
+<div class="container">
+    <div class="item-wrapper one">
+      <div class="item">
+        <div class="item-inner">
+          <div class="item-content">
+            <div class="alert alert-success" role="alert" id="success">
+
+            </div>
+            <div class="alert alert-danger" role="alert" id="error">
+
+            </div>
+
+            <div class="file-upload" id="drop-area">
+              <label style="cursor: pointer;" for="file">
+                <div class="h-100">
+                  <div class="dplay-tbl">
+                    <div class="dplay-tbl-cell">
+                      <i class="fa fa-cloud-upload"></i>
+                      <h5><b>Choose Your Font to Upload</b></h5>
+                      <h6 class="mt-10 mb-70">Or Drop Your Font Here</h6>
+                    </div>
+                  </div>
+                </div>
+                <!--upload-content-->
+                <input data-required="ttf" type="file" name="file" id="file" class="file-input">
+
+              </label>
+            </div>
+          </div>
+          <!--item-content-->
+        </div>
+        <!--item-inner-->
+
+
+      </div>
+      <!--item-->
+
+    </div>
+  </div>
+
+  <div class="container">
+    <h4>Our Fonts
+      <br /><small class="text-muted">Browse List of Fonts</small>
+    </h4>
+
+    <table class="table" id="fontlist-table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Preview</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody id="fontlist">
+
+      </tbody>
+    </table>
+  </div>
+</div>
