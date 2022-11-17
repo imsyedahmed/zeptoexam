@@ -39,6 +39,11 @@ class Model {
         return $this->_connect->delete("fonts", array('id'=> $id));
     }
 
+    // for font group 
+    public function getFontGroupList(){
+        return $this->_connect->select("fontgroups", "*");
+    }
+    
     private function _insertFontGroup($data){
         return $this->_connect->insert("fontgroups", $data);
     }
