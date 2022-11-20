@@ -44,14 +44,13 @@ class Model {
         return $this->_connect->select("fontgroups", "*");
     }
     
-    private function _insertFontGroup($data){
+    public function insertFontGroup($data){
         return $this->_connect->insert("fontgroups", $data);
     }
 
-    private function _insertFontGroupRow($data){
-        return $this->_connect->insert("groupitems", $data);
+    public function deleteGroup($id){
+        return $this->_connect->delete("fontgroups", array('id'=> $id));
     }
-
 
     public function uploadfile(){
         $this->_filename = $_FILES["file"]["name"];

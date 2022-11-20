@@ -8,6 +8,9 @@ $(window).on('hashchange', function () {
         if($('#grouplist-table').length ) {
             fontGroupList();
         }
+        if($('.fonts_id').length){
+            selectOptionsFont();
+        }
     });
 });
 
@@ -21,13 +24,14 @@ $(window).on('load', function () {
         $.get(page.substring(1), function (pageContent) {
 
             $("#page-load").html(pageContent);
-            
             if($('#fontlist-table').length ) {
                 fontList();
             }
-
             if($('#grouplist-table').length ) {
                 fontGroupList();
+            }
+            if($('.fonts_id').length){
+                selectOptionsFont();
             }
 
         });
@@ -42,6 +46,9 @@ $(window).on('load', function () {
             }
             if($('#grouplist-table').length ) {
                 fontGroupList();
+            }
+            if($('.fonts_id').length){
+                selectOptionsFont();
             }
         });
     }

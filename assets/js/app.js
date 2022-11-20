@@ -33,14 +33,14 @@ function fontList() {
         $("head").append("<style id='customFontFamily'></style>");
         if (dt.status) {
             dt.items.forEach(itm => {
-                let row = `
+                var row = `
                     <tr>
                         <td>${itm.name}</td>
                         <td><p style="font-family: ${itm.name}">Hello World!</p></td>
                         <td><a href="javascript:deleteFont(${itm.id});" class="text-danger">Delete</a></td>
                     </tr>
                 `;
-                let style = `
+                var style = `
                     @font-face {
                         font-family: '${itm.name}';
                         src: url('http://localhost/zeptoexam/api/fonts/${itm.file_name}') format('truetype');
@@ -54,24 +54,42 @@ function fontList() {
     });
 }
 
+function selectOptionsFont() {
+    $.get("http://localhost/zeptoexam/api/font.php?type=list", function (data) {
+        var dt = JSON.parse(data);
+        if (dt.status) {
+            dt.items.forEach(itm => {
+                var opt = `<option value="${itm.id}">${itm.name}</option>`;
+                $('.fonts_id').append(opt);
+            });
+        }
+    });
+}
 
 /**
  * all font list 
  */
- function fontGroupList() {
+function fontGroupList() {
     $.get("http://localhost/zeptoexam/api/group.php?type=list", function (data) {
         var dt = JSON.parse(data);
         if (dt.status) {
-            dt.items.forEach(itm => {
-                let row = `
+            dt.groups.forEach(itm => {
+                var dfiles = JSON.parse(itm.files);
+                var files = '';
+                var count = 0;
+                dfiles.forEach(jst => {
+                    files += jst.name + ', '
+                    count++;
+                });
+                var row = `
                     <tr>
                         <td>${itm.name}</td>
-                        <td><p style="font-family: ${itm.name}">Hello World!</p></td>
-                        <td><a href="javascript:deleteEdit(${itm.id});" class="text-primary">Edit</a>&nbsp;<a href="javascript:deleteFont(${itm.id});" class="text-danger">Delete</a></td>
+                        <td>${files}</td>
+                        <td>${count}</td>
+                        <td><a href="javascript:deleteGroup(${itm.id});" class="text-danger">Delete</a></td>
                     </tr>
                 `;
                 $('#grouplist').append(row);
-
             })
         }
     });
@@ -84,13 +102,29 @@ function fontList() {
 function deleteFont(id) {
     var ct = confirm('Are you sure want to delete?');
     if (ct) {
-
         $.get(`http://localhost/zeptoexam/api/font.php?type=delete&id=${id}`, function (data) {
             var dt = JSON.parse(data);
             if (dt.status) {
                 $('#fontlist').html('');
                 $("head").remove("#customFontFamily");
                 fontList();
+            }
+        });
+    }
+}
+
+/**
+ * 
+ * @param {*} id 
+ */
+ function deleteGroup(id) {
+    var ct = confirm('Are you sure want to delete?');
+    if (ct) {
+        $.get(`http://localhost/zeptoexam/api/group.php?type=delete&id=${id}`, function (data) {
+            var dt = JSON.parse(data);
+            if (dt.status) {
+                $('#grouplist').html('');
+                fontGroupList();
             }
         });
     }
@@ -128,7 +162,36 @@ $(document).ready(function () {
         }
     });
     // end of upload font file 
-
 });
 
+$(document).on("click", "#addmore", function () {
+    var $clone = $('#clone-row:eq(0)').clone();
+    $clone.find('.fonts_id').val('');
+    $clone.find('.fonts_name').val('');
+    $('#nlist').append($clone);
+});
+
+$(document).on("change", ".fonts_id", function () {
+    var $fid = $(this).val();
+    if ($fid != '') {
+        var $fname = $(this).find('option:selected').text();
+        $(this).parents('tr').find('.fonts_name').val($fname);
+    }
+});
+
+$(document).on("submit", "#group-font", function (e) {
+    e.preventDefault();
+    var form = $(this);
+    var formdata = form.serialize();
+    $.post("http://localhost/zeptoexam/api/group.php?type=new", formdata, function (data) {
+        var dt = JSON.parse(data);
+        if (dt.status) {
+            $('#success').show();
+            $('#success').html(dt.msg);
+        } else {
+            $('#error').show();
+            $('#error').html(dt.msg);
+        }
+    });
+});
 
